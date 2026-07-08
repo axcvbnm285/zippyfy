@@ -1,7 +1,6 @@
 import prisma from "../prisma/client.js";
 
 class ProductRepository {
-
   async create(data: {
     name: string;
     slug: string;
@@ -17,7 +16,6 @@ class ProductRepository {
     categoryId: string;
     storeId: string;
   }) {
-
     return prisma.product.create({
       data,
       include: {
@@ -25,58 +23,100 @@ class ProductRepository {
         store: true,
       },
     });
-
   }
 
-  async findBySlug(slug: string) {
-
+  async findById(id: string) {
     return prisma.product.findUnique({
-      where: {
-        slug,
-      },
-    });
-
-  }
-
-  async findAll() {
-
-    return prisma.product.findMany({
-
-      where: {
-        isActive: true,
-      },
-
+      where: { id },
       include: {
         category: true,
         store: true,
       },
+    });
+  }
 
+  async findBySlug(slug: string) {
+    return prisma.product.findUnique({
+      where: { slug },
+      include: {
+        category: true,
+        store: true,
+      },
+    });
+  }
+
+  async findAll(skip = 0, take = 20) {
+    return prisma.product.findMany({
+      where: {
+        isActive: true,
+      },
+      include: {
+        category: true,
+        store: true,
+      },
       orderBy: {
         createdAt: "desc",
       },
-
+      skip,
+      take,
     });
+  }
 
+  async findFeatured() {
+    return prisma.product.findMany({
+      where: {
+        isFeatured: true,
+        isActive: true,
+      },
+      include: {
+        category: true,
+        store: true,
+      },
+      take: 10,
+    });
   }
 
   async findByCategory(categoryId: string) {
-
     return prisma.product.findMany({
-
       where: {
         categoryId,
         isActive: true,
       },
-
       include: {
         category: true,
         store: true,
       },
-
     });
-
   }
 
+  async update(id: string, data: any) {
+    return prisma.product.update({
+      where: { id },
+      data,
+      include: {
+        category: true,
+        store: true,
+      },
+    });
+  }
+
+  async updateStock(id: string, stock: number) {
+    return prisma.product.update({
+      where: { id },
+      data: {
+        stock,
+      },
+    });
+  }
+
+  async deactivate(id: string) {
+    return prisma.product.update({
+      where: { id },
+      data: {
+        isActive: false,
+      },
+    });
+  }
 }
 
 export default new ProductRepository();

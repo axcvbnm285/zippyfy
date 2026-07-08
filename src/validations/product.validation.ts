@@ -1,8 +1,7 @@
 import { z } from "zod";
 
 export const createProductSchema = z.object({
-
-  name: z.string().min(2),
+  name: z.string().min(2).max(100),
 
   description: z.string().optional(),
 
@@ -22,8 +21,7 @@ export const createProductSchema = z.object({
 
   unit: z.string().min(1),
 
-  categoryId: z.string(),
-
-  storeId: z.string(),
-
+  categoryId: z.string().min(1),
 });
+
+export const updateProductSchema = createProductSchema.partial();
