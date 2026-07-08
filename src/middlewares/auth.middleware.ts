@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import prisma from "../prisma/client.js";
+
 import ApiError from "../utils/ApiError.js";
+import userRepository from "../repositories/user.repository.js";
 
 interface JwtPayload {
   id: string;
@@ -17,7 +18,7 @@ declare global {
 
 const authMiddleware = async (
   req: Request,
-  res: Response,
+  _res: Response,
   next: NextFunction
 ) => {
   const authHeader = req.headers.authorization;
@@ -27,7 +28,7 @@ const authMiddleware = async (
   }
 
   if (!authHeader.startsWith("Bearer ")) {
-    return next(new ApiError(401, "Invalid Token"));
+    return next(new ApiError(401, "Invalid token"));
   }
 
   const token = authHeader.split(" ")[1];
@@ -38,7 +39,7 @@ const authMiddleware = async (
       process.env.JWT_SECRET!
     ) as JwtPayload;
 
-    const user = await prisma.user.findUnique({ where: { id: decoded.id } });
+    const user = await userRepository.findById(decoded.id);
 
     if (!user) {
       return next(new ApiError(401, "User not found"));
@@ -46,11 +47,11 @@ const authMiddleware = async (
 
     const { password, ...safeUser } = user;
 
-req.user = safeUser;
+    req.user = safeUser;
 
     next();
-  } catch {
-    return next(new ApiError(401, "Token Expired"));
+  } catch (error) {
+    return next(new ApiError(401, "Invalid or expired token"));
   }
 };
 

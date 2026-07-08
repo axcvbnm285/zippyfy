@@ -6,6 +6,9 @@ class UserRepository {
       where: {
         email,
       },
+      include: {
+        store: true,
+      },
     });
   }
 
@@ -20,12 +23,15 @@ class UserRepository {
   }
 
   async findById(id: string) {
-  return prisma.user.findUnique({
-    where: {
-      id,
-    },
-  });
-}
+    return prisma.user.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        store: true,
+      },
+    });
+  }
 }
 
 export default new UserRepository();

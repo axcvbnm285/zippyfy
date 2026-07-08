@@ -25,8 +25,13 @@
     "helmet": "^8.2.0",
     "jsonwebtoken": "^9.0.3",
     "morgan": "^1.11.0",
+    "nanoid": "^5.1.16",
     "prisma": "^6.19.3",
+    "slugify": "^1.6.9",
     "zod": "^4.4.3"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
