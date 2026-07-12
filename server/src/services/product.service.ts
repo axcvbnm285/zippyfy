@@ -66,6 +66,23 @@ class ProductService {
       categoryId
     );
   }
+  async update(id: string, data: any, user: any) {
+    const product = await productRepository.findById(id);
+    if (!product) throw new ApiError(404, "Product not found.");
+    if (product.storeId !== user.store?.id) throw new ApiError(403, "Not your product.");
+    return productRepository.update(id, data);
+  }
+
+  async delete(id: string, user: any) {
+    const product = await productRepository.findById(id);
+    if (!product) throw new ApiError(404, "Product not found.");
+    if (product.storeId !== user.store?.id) throw new ApiError(403, "Not your product.");
+    return productRepository.deactivate(id);
+  }
+
+  async getByStore(storeId: string) {
+    return productRepository.findByStore(storeId);
+  }
 }
 
 export default new ProductService();

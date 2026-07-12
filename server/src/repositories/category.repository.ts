@@ -43,6 +43,13 @@ class CategoryRepository {
       where: { id },
     });
   }
+  async update(id: string, data: { name?: string; isActive?: boolean }) {
+    return prisma.category.update({ where: { id }, data });
+  }
+
+  async delete(id: string) {
+    return prisma.category.delete({ where: { id } });
+  }
 }
 
 export default new CategoryRepository();

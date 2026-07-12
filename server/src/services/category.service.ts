@@ -30,6 +30,17 @@ class CategoryService {
   async getAll() {
     return categoryRepository.findAll();
   }
+  async update(id: string, data: { name?: string; isActive?: boolean }) {
+    const category = await categoryRepository.findById(id);
+    if (!category) throw new ApiError(404, "Category not found");
+    return categoryRepository.update(id, data);
+  }
+
+  async delete(id: string) {
+    const category = await categoryRepository.findById(id);
+    if (!category) throw new ApiError(404, "Category not found");
+    return categoryRepository.delete(id);
+  }
 }
 
 export default new CategoryService();

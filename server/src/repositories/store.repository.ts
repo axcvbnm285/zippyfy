@@ -7,11 +7,17 @@ class StoreRepository {
     address: string;
     phone: string;
     imageUrl?: string;
+    openTime?: string;
+    closeTime?: string;
     ownerId: string;
   }) {
     return prisma.store.create({
       data,
     });
+  }
+
+  async findFirst() {
+    return prisma.store.findFirst({ where: { isActive: true } });
   }
 
   async findByOwnerId(ownerId: string) {

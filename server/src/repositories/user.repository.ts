@@ -16,6 +16,7 @@ class UserRepository {
     name: string;
     email: string;
     password: string;
+    role?: "CUSTOMER" | "STORE_OWNER" | "ADMIN" | "DELIVERY";
   }) {
     return prisma.user.create({
       data,

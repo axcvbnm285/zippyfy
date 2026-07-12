@@ -14,22 +14,22 @@ export const sidebarItems = [
   },
   {
     title: "Products",
-    href: "/products",
+    href: "/dashboard/products",
     icon: Package,
   },
   {
     title: "Orders",
-    href: "/orders",
+    href: "/dashboard/orders",
     icon: ShoppingBag,
   },
   {
     title: "Categories",
-    href: "/categories",
+    href: "/dashboard/categories",
     icon: FolderOpen,
   },
   {
     title: "Settings",
-    href: "/settings",
+    href: "/dashboard/settings",
     icon: Settings,
   },
 ];

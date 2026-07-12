@@ -4,6 +4,13 @@ import asyncHandler from "../utils/asyncHandler.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import authService from "../services/auth.service.js";
 
+export const registerStore = asyncHandler(
+  async (req: Request, res: Response) => {
+    const result = await authService.registerStoreOwner(req.body);
+    return res.status(201).json(new ApiResponse("Store registered successfully", result));
+  }
+);
+
 export const register = asyncHandler(
   async (req: Request, res: Response) => {
     const { name, email, password } = req.body;

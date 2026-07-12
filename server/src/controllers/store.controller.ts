@@ -21,6 +21,13 @@ export const createStore = asyncHandler(
   }
 );
 
+export const getPublicStore = asyncHandler(
+  async (_req: Request, res: Response) => {
+    const store = await storeService.getPublicStore();
+    return res.status(200).json(new ApiResponse("Store fetched successfully", store));
+  }
+);
+
 export const getMyStore = asyncHandler(
   async (req: Request, res: Response) => {
     const store =

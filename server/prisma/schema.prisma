@@ -14,6 +14,26 @@ enum Role {
   ADMIN
 }
 
+enum OrderStatus {
+  NEW
+  PACKING
+  READY
+  COLLECTED
+  REJECTED
+}
+
+enum PaymentMethod {
+  CASH_ON_PICKUP
+  ONLINE
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
 model User {
   id                String   @id @default(cuid())
 
@@ -35,7 +55,8 @@ model User {
 
   updatedAt         DateTime @updatedAt
 
-  store Store?
+  store  Store?
+  orders Order[]
 }
 
 model Store {
@@ -56,9 +77,14 @@ model Store {
 
   owner       User     @relation(fields: [ownerId], references: [id])
 
+  openTime    String?
+
+  closeTime   String?
+
   isActive    Boolean  @default(true)
 
   products    Product[]
+  orders      Order[]
 
   createdAt   DateTime @default(now())
 
@@ -124,7 +150,67 @@ model Product {
 
   updatedAt      DateTime @updatedAt
 
+  orderItems OrderItem[]
+
   @@index([categoryId])
   @@index([storeId])
   @@index([slug])
+}
+
+model Order {
+  id            String        @id @default(cuid())
+
+  customerId    String
+  customer      User          @relation(fields: [customerId], references: [id])
+
+  storeId       String
+  store         Store         @relation(fields: [storeId], references: [id])
+
+  status        OrderStatus   @default(NEW)
+
+  pickupCode    String?       @unique
+
+  total         Float
+
+  paymentMethod PaymentMethod @default(CASH_ON_PICKUP)
+
+  paymentStatus PaymentStatus @default(PENDING)
+
+  note          String?
+
+  placedAt      DateTime      @default(now())
+  acceptedAt    DateTime?
+  readyAt       DateTime?
+  collectedAt   DateTime?
+  rejectedAt    DateTime?
+
+  items         OrderItem[]
+
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([customerId])
+  @@index([storeId])
+  @@index([status])
+  @@index([pickupCode])
+}
+
+model OrderItem {
+  id         String   @id @default(cuid())
+
+  orderId    String
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id])
+
+  name       String
+  imageUrl   String?
+  unit       String
+
+  qty        Int
+  price      Float
+
+  @@index([orderId])
+  @@index([productId])
 }

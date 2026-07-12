@@ -32,6 +32,12 @@ class StoreService {
     });
   }
 
+  async getPublicStore() {
+    const store = await storeRepository.findFirst();
+    if (!store) throw new ApiError(404, "No store found.");
+    return store;
+  }
+
   async getMyStore(ownerId: string) {
     const store =
       await storeRepository.findByOwnerId(ownerId);

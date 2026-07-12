@@ -6,19 +6,22 @@ import categoryService from "../services/category.service.js";
 export const createCategory = asyncHandler(
   async (req: Request, res: Response) => {
     const { name, imageUrl } = req.body;
-
-    const category =
-      categoryService.create(
-    name,
-    imageUrl
+    const category = await categoryService.create(name, imageUrl);
+    return res.status(201).json(new ApiResponse("Category created successfully", category));
+  }
 );
 
-    return res.status(201).json(
-      new ApiResponse(
-        "Category created successfully",
-        category
-      )
-    );
+export const updateCategory = asyncHandler(
+  async (req: Request, res: Response) => {
+    const category = await categoryService.update(String(req.params.id), req.body);
+    return res.status(200).json(new ApiResponse("Category updated successfully", category));
+  }
+);
+
+export const deleteCategory = asyncHandler(
+  async (req: Request, res: Response) => {
+    await categoryService.delete(String(req.params.id));
+    return res.status(200).json(new ApiResponse("Category deleted successfully", null));
   }
 );
 

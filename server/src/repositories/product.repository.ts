@@ -117,6 +117,13 @@ class ProductRepository {
       },
     });
   }
+  async findByStore(storeId: string) {
+    return prisma.product.findMany({
+      where: { storeId },
+      include: { category: true },
+      orderBy: { createdAt: "desc" },
+    });
+  }
 }
 
 export default new ProductRepository();

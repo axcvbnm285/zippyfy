@@ -1,30 +1,36 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   Package,
   ShoppingCart,
   FolderTree,
-  BarChart3,
   Settings,
   LogOut,
   Zap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/store/authStore";
 
 const menuItems = [
-  { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { title: "Products", href: "/products", icon: Package },
-  { title: "Orders", href: "/orders", icon: ShoppingCart },
-  { title: "Categories", href: "/categories", icon: FolderTree },
-  { title: "Analytics", href: "/analytics", icon: BarChart3 },
-  { title: "Settings", href: "/settings", icon: Settings },
+  { title: "Dashboard", href: "/dashboard",            icon: LayoutDashboard },
+  { title: "Orders",    href: "/dashboard/orders",     icon: ShoppingCart },
+  { title: "Products",  href: "/dashboard/products",   icon: Package },
+  { title: "Categories",href: "/dashboard/categories", icon: FolderTree },
+  { title: "Settings",  href: "/dashboard/settings",   icon: Settings },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const logout = useAuthStore((s) => s.logout);
+
+  const handleLogout = () => {
+    logout();
+    router.push("/store/login");
+  };
 
   return (
     <aside className="flex h-screen w-60 flex-col border-r border-border bg-background">
@@ -43,7 +49,7 @@ export default function Sidebar() {
         </p>
         {menuItems.map((item) => {
           const Icon = item.icon;
-          const active = pathname === item.href;
+          const active = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
           return (
             <Link
               key={item.title}
@@ -64,7 +70,10 @@ export default function Sidebar() {
 
       {/* Footer */}
       <div className="border-t border-border p-3">
-        <button className="flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive">
+        <button
+          onClick={handleLogout}
+          className="flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+        >
           <LogOut size={15} />
           Logout
         </button>

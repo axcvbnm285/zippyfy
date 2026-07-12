@@ -69,18 +69,29 @@ export const getFeaturedProducts = asyncHandler(
   }
 );
 
+export const updateProduct = asyncHandler(
+  async (req: Request, res: Response) => {
+    const product = await productService.update(String(req.params.id), req.body, req.user);
+    return res.status(200).json(new ApiResponse("Product updated successfully", product));
+  }
+);
+
+export const deleteProduct = asyncHandler(
+  async (req: Request, res: Response) => {
+    await productService.delete(String(req.params.id), req.user);
+    return res.status(200).json(new ApiResponse("Product deleted successfully", null));
+  }
+);
+
+export const getStoreProducts = asyncHandler(
+  async (req: Request, res: Response) => {
+    const products = await productService.getByStore(req.user!.store.id);
+    return res.status(200).json(new ApiResponse("Products fetched successfully", products));
+  }
+);
 export const getProductsByCategory = asyncHandler(
   async (req: Request, res: Response) => {
-    const products =
-      await productService.getByCategory(
-        req.params.categoryId as string
-      );
-
-    return res.status(200).json(
-      new ApiResponse(
-        "Products fetched successfully",
-        products
-      )
-    );
+    const products = await productService.getByCategory(req.params.categoryId as string);
+    return res.status(200).json(new ApiResponse("Products fetched successfully", products));
   }
 );
